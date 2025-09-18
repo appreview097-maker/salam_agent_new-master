@@ -124,11 +124,10 @@ class VerificationController extends GetxController {
             final localTransactions = await SharedPref.getTransactions();
             transactions.clear();
             transactions.addAll(
-              localTransactions.where(
-                (t) =>
-                    t.identifiant.value == student.identification &&
-                    t.type.value!.libelle == selectedRepas.libelle,
-              ),
+              localTransactions.where((t) =>
+                  t.identifiant.value == student.identification &&
+                  t.type.value!.libelle == selectedRepas.libelle &&
+                  t.type.value!.id == selectedRepas.id),
             );
           }
         }

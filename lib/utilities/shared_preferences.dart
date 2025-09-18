@@ -105,6 +105,13 @@ class SharedPref {
     }
   }
 
+  static Future<void> addTransaction(TransactionModel newTxn) async {
+    final transactions = await getTransactions();
+    transactions.add(newTxn);
+    await saveTransactions(transactions);
+  }
+
+
   static const String _pendingSyncKey = "pending_sync_transaction_list";
 
   /// Save full list (overwrite)

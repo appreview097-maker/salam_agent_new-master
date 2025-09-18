@@ -197,7 +197,7 @@ class PaymentController extends GetxController {
                 color: '',
                 montant: hc.selectedRepas.value!.montant),
           );
-          await SharedPref.updateTransaction(updatedTransaction);
+          await SharedPref.addTransaction(updatedTransaction);
           await SharedPref.incrementCounter();
           hc.count.value++;
 

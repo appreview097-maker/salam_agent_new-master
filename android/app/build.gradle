@@ -35,13 +35,13 @@ android {
             keyAlias "androiddebugkey"
             keyPassword "android"
         }
-        // if you use release signing
-        // release {
-        //     keyAlias keystoreProperties['keyAlias']
-        //     keyPassword keystoreProperties['keyPassword']
-        //     storeFile file(keystoreProperties['storeFile'])
-        //     storePassword keystoreProperties['storePassword']
-        // }
+        // ✅ for now, use the same debug keystore for release
+        release {
+            storeFile file("${System.properties['user.home']}/.android/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
     }
 
     buildTypes {
@@ -49,9 +49,10 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            // signingConfig signingConfigs.release
-            minifyEnabled true
-            shrinkResources true
+            signingConfig signingConfigs.release
+            // ⚠️ keep minify/shrink disabled for now to avoid obfuscation issues
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }

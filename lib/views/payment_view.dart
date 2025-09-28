@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -91,63 +92,71 @@ class PaymentPage extends StatelessWidget {
                   ],
                 ),
               ),
-              Obx(() {
-                if (pc.hc.selectedRepas.value!.montant <= pc.sm.value!.solde)
-                  return Container(
-                    width: size.width * 0.9,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 30),
-                        ElevatedButton(
-                          onPressed: () {
-                            pc.confirmPayment(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: CircleBorder(),
-                            // Circular shape
-                            padding: EdgeInsets.all(20),
-                            // Adjust size of the button
-                            backgroundColor: Colors.green, // Button color
-                          ),
-                          child: pc.isSubmitting.value
-                              ? CircularProgressIndicator(color: Colors.white)
-                              : Icon(Icons.check,
-                                  color: Colors.white, size: 120), // Tick icon
-                        ),
-                      ],
-                    ),
-                  );
-                else
-                  return Container(
-                    width: size.width * 0.9,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 30),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            shape: CircleBorder(),
-                            // Circular shape
-                            padding: EdgeInsets.all(20),
-                            // Adjust size of the button
-                            backgroundColor: Colors.red, // Button color
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.close,
-                              color: Colors.white,
-                              size: 120,
+              FutureBuilder<List<ConnectivityResult>>(
+                future: Connectivity().checkConnectivity(),
+                builder: (context, ccc) {
+                  if (!ccc.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  return Obx(() {
+                    final hasEnoughBalance =
+                        pc.hc.selectedRepas.value!.montant <=
+                            pc.sm.value!.solde;
+                    final noInternet =
+                        ccc.data!.contains(ConnectivityResult.none);
+
+                    // if (hasEnoughBalance && noInternet) {
+                      return Container(
+                        width: size.width * 0.9,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 3),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 30),
+                            ElevatedButton(
+                              onPressed: () {
+                                pc.confirmPayment(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(20),
+                                backgroundColor: Colors.green,
+                              ),
+                              child: pc.isSubmitting.value
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white)
+                                  : const Icon(Icons.check,
+                                      color: Colors.white, size: 120),
                             ),
-                          ), // Center the icon
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-              }),
+                      );
+                    // } else {
+                    //   return Container(
+                    //     width: size.width * 0.9,
+                    //     padding: const EdgeInsets.symmetric(
+                    //         horizontal: 15, vertical: 3),
+                    //     child: Column(
+                    //       children: [
+                    //         const SizedBox(height: 30),
+                    //         ElevatedButton(
+                    //           onPressed: () {},
+                    //           style: ElevatedButton.styleFrom(
+                    //             shape: const CircleBorder(),
+                    //             padding: const EdgeInsets.all(20),
+                    //             backgroundColor: Colors.red,
+                    //           ),
+                    //           child: const Icon(Icons.close,
+                    //               color: Colors.white, size: 120),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   );
+                    // }
+                  });
+                },
+              )
             ],
           ),
         );

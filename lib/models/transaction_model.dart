@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import 'type_model.dart';
@@ -63,34 +62,34 @@ extension TransactionModelToJson on TransactionModel {
   }
 }
 
-extension TransactionColorExtension on TransactionModel {
-  Color get statusColor {
-    final hex = type.value?.color ?? "#999999"; // fallback grey
-    return _hexToColor(hex);
-  }
-
-  Color _hexToColor(String hex) {
-    String formatted = hex.trim().toLowerCase();
-
-    // Remove # or 0x if present
-    if (formatted.startsWith("#")) {
-      formatted = formatted.substring(1);
-    }
-    if (formatted.startsWith("0x")) {
-      formatted = formatted.substring(2);
-    }
-
-    // If only RGB is provided, prepend FF (full opacity)
-    if (formatted.length == 6) {
-      formatted = "ff$formatted";
-    }
-
-    return Color(int.parse("0x$formatted"));
-  }
-}
+// extension TransactionColorExtension on TransactionModel {
+// Color get statusColor {
+//   final hex = type.value?.color ?? "#999999"; // fallback grey
+//   return _hexToColor(hex);
+// }
+//
+// Color _hexToColor(String hex) {
+//   String formatted = hex.trim().toLowerCase();
+//
+//   // Remove # or 0x if present
+//   if (formatted.startsWith("#")) {
+//     formatted = formatted.substring(1);
+//   }
+//   if (formatted.startsWith("0x")) {
+//     formatted = formatted.substring(2);
+//   }
+//
+//   // If only RGB is provided, prepend FF (full opacity)
+//   if (formatted.length == 6) {
+//     formatted = "ff$formatted";
+//   }
+//
+//   return Color(int.parse("0x$formatted"));
+// }
+// }
 
 class PendingTransactionModel {
-  final String uuid;       // local unique id
+  final String uuid; // local unique id
   final int? etudiantId;
   final int quantite;
   final int? typeId;
@@ -132,6 +131,3 @@ class PendingTransactionModel {
     };
   }
 }
-
-
-

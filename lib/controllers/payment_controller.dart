@@ -1,17 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as mt;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:salam_agent/models/student_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:salam_agent/models/student_model.dart';
 import 'package:salam_agent/models/transaction_model.dart';
 import 'package:salam_agent/models/type_model.dart';
+
 import '../utilities/constant.dart';
 import '../utilities/shared_preferences.dart';
 import '../utilities/snack_alerts.dart';
 import 'home_controller.dart';
-import 'dart:math' as mt;
 
 class PaymentController extends GetxController {
   final hc = Get.find<HomeController>();
@@ -189,7 +190,7 @@ class PaymentController extends GetxController {
             identifiant: qrdata,
             montant: hc.selectedRepas.value!.montant.toString(),
             quantite: 1,
-            reference: 'will be available when online',
+            reference: 'offline mode',
             repas: hc.selectedRepas.value!.libelle,
             type: TypeModel(
                 id: hc.selectedRepas.value!.id,

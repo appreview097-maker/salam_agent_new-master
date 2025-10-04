@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:salam_agent/models/transaction_model.dart';
+
 import '../utilities/shared_preferences.dart';
 
 class TransactionsView extends StatefulWidget {
@@ -15,6 +14,7 @@ class TransactionsView extends StatefulWidget {
 class _TransactionsViewState extends State<TransactionsView> {
   List<TransactionModel> allTransactions = [];
   List<TransactionModel> filteredTransactions = [];
+  List<PendingTransactionModel> pendingTransactions = [];
 
   String? selectedType;
   DateTime? startDate;
@@ -30,9 +30,11 @@ class _TransactionsViewState extends State<TransactionsView> {
 
   Future<void> _loadTransactions() async {
     final txns = await SharedPref.getTransactions();
+    final remainingTransactions = await SharedPref.getPendingSyncTrans();
     setState(() {
       allTransactions = txns;
       filteredTransactions = txns;
+      // pendingTransactions = remainingTransactions.where((txn) => txn.));
     });
   }
 
@@ -172,7 +174,6 @@ class _TransactionsViewState extends State<TransactionsView> {
                           text: _formatDate(endDate),
                         ),
                       ),
-
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -235,8 +236,26 @@ class TransactionCard extends StatelessWidget {
     required this.transaction,
   });
 
+  String formatCustomDateString(String dateString) {
+    // Input Format (remains the same to handle the semicolon separator)
+    final DateFormat inputFormat = DateFormat("yyyy-MM-dd HH:mm':'ss");
+
+    // New Output Format for 12-hour time with seconds
+    final DateFormat outputFormat = DateFormat('MMM d, yy, h:mm:ss a');
+
+    try {
+      DateTime dateTime = inputFormat.parse(dateString);
+      String formattedString = outputFormat.format(dateTime);
+      return formattedString;
+    } catch (e) {
+      return 'Error: Could not parse date. Original error: $e';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final montant = transaction.montant.value ?? "0";
+    final formattedDate = formatCustomDateString(transaction.date.value ?? '');
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -256,7 +275,9 @@ class TransactionCard extends StatelessWidget {
           // Left: Type Icon
           CircleAvatar(
             radius: 24,
-            backgroundColor: transaction.statusColor.withOpacity(0.2),
+            backgroundColor: montant.contains("+")
+                ? Colors.green.shade50
+                : Colors.red.shade50,
             child: const Icon(
               Icons.receipt_long,
               color: Colors.indigo,
@@ -302,16 +323,16 @@ class TransactionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${transaction.montant.value ?? "0"} \$",
-                style: const TextStyle(
+                montant.contains("+") ? "$montant\$ Paid" : "$montant\$ Unpaid",
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo,
+                  color: montant.contains("+") ? Colors.green : Colors.red,
                 ),
               ),
               const SizedBox(height: 6),
               Text(
-                transaction.date.value ?? "",
+                formattedDate,
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey.shade500,

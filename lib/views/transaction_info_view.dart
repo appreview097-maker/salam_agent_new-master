@@ -14,10 +14,10 @@ class TransactionInfo extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 5),
         child: Container(
           decoration: const BoxDecoration(color: Colors.white
-            // ,borderRadius: BorderRadius.circular(10)
-          ),
+              // ,borderRadius: BorderRadius.circular(10)
+              ),
           child: TextButton(
-            onPressed: (){
+            onPressed: () {
               showModalBottomSheet(
                   context: context,
                   builder: (context) {
@@ -35,8 +35,7 @@ class TransactionInfo extends StatelessWidget {
             },
             child: _itemWidget(),
           ),
-        )
-    );
+        ));
   }
 
   Row _itemWidget() {
@@ -53,7 +52,7 @@ class TransactionInfo extends StatelessWidget {
             Container(
               height: 50,
               width: 50,
-              child: Lottie.asset(renderIcon(item.type.value!.libelle) ),
+              child: Lottie.asset(renderIcon(item.type.value!.libelle)),
             ),
             Text(
               " ${item.quantite == -1 ? '' : item.quantite} ${item.type.value!.libelle}",
@@ -67,7 +66,7 @@ class TransactionInfo extends StatelessWidget {
             Text(
               "${item.montant}F CFA",
               style: TextStyle(
-                  color:item.montant.value!.contains("+")
+                  color: item.montant.value!.contains("+")
                       ? Colors.green
                       : Colors.red),
             ),
@@ -81,17 +80,18 @@ class TransactionInfo extends StatelessWidget {
 
   String renderIcon(String action) {
     if (action == "rechargement") return "images/wallet.json";
-    if(action=="transfert") return "images/out.json";
+    if (action == "transfert") return "images/out.json";
     return "images/lunch.json";
   }
 
-  String rendel_libelle(TransactionModel item){
-  //  if(item.agent!=null) return "Agent";
-    if(item.montant.value!.contains('-'))
+  String rendel_libelle(TransactionModel item) {
+    //  if(item.agent!=null) return "Agent";
+    if (item.montant.value!.contains('-'))
       return "envoyé à";
     else
       return "reçu de ";
   }
+
   Column _factureTransaction() {
     return Column(
       children: [
@@ -173,5 +173,4 @@ class TransactionInfo extends StatelessWidget {
       ],
     );
   }
-
 }

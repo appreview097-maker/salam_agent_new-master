@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salam_agent/controllers/verification_controller.dart';
@@ -59,6 +61,9 @@ class VerificationPage extends StatelessWidget {
             );
           }
 
+          print('vc.sm.value!.photo');
+          print(vc.sm.value!.photo);
+
           return Column(
             children: [
               Container(
@@ -84,12 +89,15 @@ class VerificationPage extends StatelessWidget {
                             .titleMedium
                             ?.copyWith(color: Colors.white54),
                       ),
-                      trailing: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          radius: 65,
-                          backgroundImage: NetworkImage(vc.sm.value!.photo),
+                      trailing: Container(
+                        width: 130, // diameter = radius * 2
+                        height: 130,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: FileImage(File(vc.sm.value!.photo)),
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),

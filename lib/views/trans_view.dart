@@ -38,22 +38,38 @@ class _TransactionsViewState extends State<TransactionsView> {
     });
   }
 
+  final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+
   void _applyFilter() {
+    final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
     setState(() {
       filteredTransactions = allTransactions.where((txn) {
-        final matchesType =
-            selectedType == null || txn.type.value?.libelle == selectedType;
+        final txnType = txn.type.value?.libelle;
+        final txnDateStr = txn.date.value;
+        DateTime? txnDate;
 
-        final txnDate = txn.date.value != null && txn.date.value!.isNotEmpty
-            ? DateTime.tryParse(txn.date.value!)
+        if (txnDateStr != null && txnDateStr.isNotEmpty) {
+          try {
+            txnDate = _dateFormat.parse(txnDateStr);
+          } catch (e) {
+            print('Failed to parse date: $txnDateStr');
+          }
+        }
+
+        if (txnDate == null) return false;
+
+        final txnDay = DateTime(txnDate.year, txnDate.month, txnDate.day);
+        final startDay = startDate != null
+            ? DateTime(startDate!.year, startDate!.month, startDate!.day)
+            : null;
+        final endDay = endDate != null
+            ? DateTime(endDate!.year, endDate!.month, endDate!.day)
             : null;
 
-        final matchesStart = startDate == null ||
-            (txnDate != null &&
-                txnDate.isAfter(startDate!.subtract(const Duration(days: 1))));
-        final matchesEnd = endDate == null ||
-            (txnDate != null &&
-                txnDate.isBefore(endDate!.add(const Duration(days: 1))));
+        final matchesType = selectedType == null || txnType == selectedType;
+
+        final matchesStart = startDay == null || !txnDay.isBefore(startDay);
+        final matchesEnd = endDay == null || !txnDay.isAfter(endDay);
 
         return matchesType && matchesStart && matchesEnd;
       }).toList();
